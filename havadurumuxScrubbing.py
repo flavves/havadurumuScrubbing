@@ -17,96 +17,111 @@ import time
 from selenium.webdriver.chrome.options import Options
 from unidecode import unidecode
 import json
-# havadurumux scrubbing
-#url 
-havaDurumuxUrl="https://www.havadurumux.net/api.php?dcr=%23d0d0d0&apr=%23eeeeee&icr=%23d2d2d2&ikap=%23ffffff&fr=%23000000&br=%232f6395&dr=%233570a9&wt=yatay&cityurl=321"
-
-chrome_options = Options()
-#chrome_options.add_argument("--headless")
-driver = webdriver.Chrome(executable_path=r'chromedriver.exe',chrome_options=chrome_options)
-
-headers = {
-    "User-Agent": "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
-}
-driver.get("https://www.havadurumux.net")
 
 
-#illeri çekme işlemi
-def illeriCek():
-    element=driver.find_element_by_xpath('//*[@id="iller"]')
-    
-    iller=element.text.split("\n")
-    iller.pop(0)
-    
-    illerListesi=[]
-    for il in iller:
-        il=il.replace(" ","")
-        illerListesi.append(il)
-    
-    
-    with open("iller.txt", "w", encoding="utf-8") as dosya:
-        for ilYaz in illerListesi:       
-            dosya.write(ilYaz+";")
-    
-    
+
+
+
+class havadurumuxScrubbing():
     
 
-with open("iller.txt", "r", encoding="utf-8") as dosya:
-    gelendeneme=dosya.readline()
-
-def turkish_to_english(text):
-    return unidecode(text)
-
-
-illerListesi=gelendeneme.split(";")
-illerListesi.pop()
-
-with open("illerPlakaKodlari.json", "r", encoding="utf-8") as json_dosya:
-    illerinPlakalari = json.load(json_dosya)
-
-
-def veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek_sicaklik, dusuk_sicaklik):
-    if plaka not in havaDurumuVerileri:
-        havaDurumuVerileri[plaka] = {}
-    havaDurumuVerileri[plaka][sayac] = {"yuksek_sicaklik": yuksek_sicaklik, "dusuk_sicaklik": dusuk_sicaklik}
-
-def sicakliklariCek():
-    havaDurumuVerileri={}
-    for ilCek in illerListesi:
-        ilCek=turkish_to_english(ilCek)
-      
-        driver.get('https://www.havadurumux.net/%s-hava-durumu/'%ilCek)
-        #htmlKodu=driver.page_source
-        havaVerileri=driver.find_element_by_id("hor-minimalist-a").text.split("\n")
-        havaVerileri.pop(0)
-        havaVerileri=havaVerileri[0:14]
-        
-        il=ilCek
-        plaka=""
-        for plakaIcin in illerinPlakalari["iller"]:
-            if plakaIcin["il"]==il:
-                plaka=plakaIcin["plaka"]
-                break
+    
+    
+    #illeri çekme işlemi
+    def illeriCek(self,driver):
+        try:
+            element=driver.find_element_by_xpath('//*[@id="iller"]')
             
-        if plaka=="":
-            print("plaka bulunamadı")
-            continue
-    
-        print("plaka %s il %s"%(plaka,ilCek))
+            iller=element.text.split("\n")
+            iller.pop(0)
+            
+            illerListesi=[]
+            for il in iller:
+                il=il.replace(" ","")
+                illerListesi.append(il)
+            
+            
+            with open("iller.txt", "w", encoding="utf-8") as dosya:
+                for ilYaz in illerListesi:       
+                    dosya.write(ilYaz+";")
+        except:
+            return False
+        return True
         
-        sayac=0
-        for dereceler in havaVerileri:
-            if "°" in dereceler:
-                yuksek=dereceler.split(" ")[0].replace("°","")
-                dusuk=dereceler.split(" ")[1].replace("°","")
-                veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek, dusuk)
+        
+        
+        
+    
+   
+    def sicakliklariCek(self,driver):
+        
+        with open("iller.txt", "r", encoding="utf-8") as dosya:
+            gelendeneme=dosya.readline()
+        
+        def turkish_to_english(text):
+            return unidecode(text)
+        
+        
+        illerListesi=gelendeneme.split(";")
+        illerListesi.pop()
+        
+        with open("illerPlakaKodlari.json", "r", encoding="utf-8") as json_dosya:
+            illerinPlakalari = json.load(json_dosya)
+        
+        
+        def veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek_sicaklik, dusuk_sicaklik):
+            if plaka not in havaDurumuVerileri:
+                havaDurumuVerileri[plaka] = {}
+            havaDurumuVerileri[plaka][sayac] = {"yuksek_sicaklik": yuksek_sicaklik, "dusuk_sicaklik": dusuk_sicaklik}
+        
+        
+        
+        havaDurumuVerileri={}
+        for ilCek in illerListesi:
+            try:
+                il=ilCek
+                ilCek=turkish_to_english(ilCek)
+              
+                driver.get('https://www.havadurumux.net/%s-hava-durumu/'%ilCek)
+                #htmlKodu=driver.page_source
+                havaVerileri=driver.find_element_by_id("hor-minimalist-a").text.split("\n")
+                havaVerileri.pop(0)
+                havaVerileri=havaVerileri[0:14]
                 
-                #print(havaDurumuVerileri)
-    
-                sayac+=1
-        time.sleep(2)
-    return havaDurumuVerileri
+                
+                plaka=""
+                
+                for plakaIcin in illerinPlakalari["iller"]:
+                    if plakaIcin["il"]==il:
+                        plaka=plakaIcin["plaka"]
+                        break
+                    
+                if plaka=="":
+                    print("plaka bulunamadı")
+                    continue
             
-print(sicakliklariCek())
-
-
+                print("plaka %s il %s"%(plaka,ilCek))
+                
+                sayac=0
+                for dereceler in havaVerileri:
+                    if "°" in dereceler:
+                        yuksek=dereceler.split(" ")[0].replace("°","")
+                        dusuk=dereceler.split(" ")[1].replace("°","")
+                        veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek, dusuk)
+                        
+                        #print(havaDurumuVerileri)
+            
+                        sayac+=1
+                time.sleep(2)
+            except:
+                return False
+        
+        
+        with open("havaDurumuxHavaDurumuVerileri.json", "w") as json_dosya:
+            json.dump(havaDurumuVerileri, json_dosya)
+            
+        return True
+        
+        return havaDurumuVerileri
+                
+    
