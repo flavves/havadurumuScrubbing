@@ -45,6 +45,8 @@ session_cookies = driver.get_cookies()
 
 
 
+
+
 def illeriCek():
     with open("iller.txt", "r", encoding="utf-8") as dosya:
         iller=dosya.readline()
@@ -59,6 +61,12 @@ illerListesi.pop()
 fonksiyonlar=seleniumFonksiyonlari.seleniumFonksiyonlari()
 
 #illerin session code degerlerini cekmemiz gerekiyor.
+
+#çerezleri kabul et
+
+fonksiyonlar.tiklaId("truste-consent-button", 30, driver)
+
+
 
 def illerinSessionCodeDegerleriniCek():
     sehirlerinSessionDegerleri={}
@@ -88,7 +96,8 @@ def illerinSessionCodeDegerleriniCek():
                         
             except :
                 onay=True  
-
+        print("---------------------------")
+        print(sehirlerinSessionDegerleri)   
         time.sleep(1)
     with open("weathercomIllerSessionCode.json", "w") as json_dosya:
         json.dump(sehirlerinSessionDegerleri, json_dosya)
@@ -113,41 +122,59 @@ def veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek_sicaklik, dusuk_sicaklik):
 def yediGunlukVeriCek():
     with open("weathercomIllerSessionCode.json", "r") as json_dosya:
         okunan_sozluk = json.load(json_dosya)
-    
-    for il in okunan_sozluk:    
+    havaDurumuVerileri={}
+    for ilCek in okunan_sozluk:    
         
-        print(okunan_sozluk[il])
+        print(okunan_sozluk[ilCek])
+        time.sleep(1)
         
-        url="https://weather.com/tr-TR/weather/tenday/l/%s"%okunan_sozluk[il] 
+        url="https://weather.com/tr-TR/weather/tenday/l/%s"%okunan_sozluk[ilCek] 
         driver.get(url)
         
         
         fonksiyonlar.tiklaName("caret-up", 30, driver)
         
         #id 
-        
+        il=ilCek
+        plaka=""
         for plakaIcin in illerinPlakalari["iller"]:
             if plakaIcin["il"]==il:
                 plaka=plakaIcin["plaka"]
-    
-        havaDurumuVerileri={}
+                break
+            
+        if plaka=="":
+            print("plaka bulunamadı")
+            continue
+        
+        
+        
+        print("plaka %s il %s"%(plaka,ilCek))
+        
         
         sayac=0
-        
+        fonksiyonlar.bekleName("twc-logo", 30, driver)
         for i in range(0,7):
-            element=fonksiyonlar.idElementDondur("detailIndex"+str(i), 3, driver)
-            yuksek=element.text.split("\n")[2].replace("°","")
-            dusuk=element.text.split("\n")[3].replace("°","").replace("/","")
-            
+            while 1:
+                try:
+                    element=fonksiyonlar.idElementDondur("detailIndex"+str(i), 3, driver)
+                    yuksek=element.text.split("\n")[2].replace("°","")
+                    dusuk=element.text.split("\n")[3].replace("°","").replace("/","")
+                    break
+                except:
+                    pass
+                
             veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek, dusuk)
 
             sayac+=1
+            #print(havaDurumuVerileri)
             
     return havaDurumuVerileri
             
         
-        
-
+illerinSessionCodeDegerleriniCek()
+    
+    
+yediGunlukVeriCek()
 
 
 

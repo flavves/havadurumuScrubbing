@@ -126,7 +126,7 @@ class seleniumFonksiyonlari():
     def tiklaName(self,degisken,sure,driver):
         try:
             WebDriverWait(driver, sure).until(
-                EC.visibility_of_element_located((By.NAME, degisken))
+                EC.element_to_be_clickable((By.NAME, degisken))
             )
         except:
             return False
@@ -138,6 +138,19 @@ class seleniumFonksiyonlari():
             return False
         
         return True
+    
+    def bekleName(self,degisken,sure,driver):
+        try:
+            WebDriverWait(driver, sure).until(
+                EC.element_to_be_clickable((By.NAME, degisken))
+            )
+        except:
+            return False
+            
+       
+        return True
+    
+    #element_to_be_clickable
     
     
     def tiklaNameKeys(self,degisken,sure,keys,driver):

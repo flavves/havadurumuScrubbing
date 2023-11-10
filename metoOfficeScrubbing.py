@@ -89,10 +89,10 @@ def illerinSessionCodeDegerleriniCek():
     for il in yeniIllerListesi:
         for link in linkler:       
             if il== link.text:
-                print(il)
+                #print(il)
                 
                 href_value = link.find_element_by_tag_name('a').get_attribute('href').split("/")[-1]
-                print(href_value)
+                #print(href_value)
                 sehirlerinSessionDegerleri[il] = href_value
        
     with open("metofficeIllerSessionCode.json", "w") as json_dosya:
@@ -111,22 +111,31 @@ def yediGunlukVeriCek():
     with open("metofficeIllerSessionCode.json", "r") as json_dosya:
         okunan_sozluk = json.load(json_dosya)
     
-    for il in okunan_sozluk:    
+    havaDurumuVerileri={}
+    
+    for ilCek in okunan_sozluk:    
         
-        print(okunan_sozluk[il])
         
-        url="https://www.metoffice.gov.uk/weather/forecast/%s"%okunan_sozluk[il] 
+        url="https://www.metoffice.gov.uk/weather/forecast/%s"%okunan_sozluk[ilCek] 
         driver.get(url)
         source=driver.page_source
         veriler=source.split("dayNav")[1].split("tabDay7")[0].split('class="tab-inner">')
         veriler.pop(0)
         
+        il=ilCek
+        plaka=""
         for plakaIcin in illerinPlakalari["iller"]:
-            if plakaIcin["il"]==il:
+            if turkish_to_english(plakaIcin["il"])==il:
                 plaka=plakaIcin["plaka"]
+                break
+            
+        if plaka=="":
+            print("plaka bulunamadı")
+            continue
         
-        havaDurumuVerileri={}
         sayac=0
+        
+        print("plaka %s il %s"%(plaka,ilCek))
         
         
         for veri in veriler:

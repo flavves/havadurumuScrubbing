@@ -71,18 +71,28 @@ def veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek_sicaklik, dusuk_sicaklik):
     havaDurumuVerileri[plaka][sayac] = {"yuksek_sicaklik": yuksek_sicaklik, "dusuk_sicaklik": dusuk_sicaklik}
 
 def sicakliklariCek():
-    for il in illerListesi:
-        driver.get('https://www.havadurumux.net/%s-hava-durumu/'%turkish_to_english(il))
+    havaDurumuVerileri={}
+    for ilCek in illerListesi:
+        ilCek=turkish_to_english(ilCek)
+      
+        driver.get('https://www.havadurumux.net/%s-hava-durumu/'%ilCek)
         #htmlKodu=driver.page_source
         havaVerileri=driver.find_element_by_id("hor-minimalist-a").text.split("\n")
         havaVerileri.pop(0)
         havaVerileri=havaVerileri[0:14]
         
+        il=ilCek
+        plaka=""
         for plakaIcin in illerinPlakalari["iller"]:
             if plakaIcin["il"]==il:
                 plaka=plakaIcin["plaka"]
+                break
+            
+        if plaka=="":
+            print("plaka bulunamadı")
+            continue
     
-        havaDurumuVerileri={}
+        print("plaka %s il %s"%(plaka,ilCek))
         
         sayac=0
         for dereceler in havaVerileri:
@@ -90,10 +100,13 @@ def sicakliklariCek():
                 yuksek=dereceler.split(" ")[0].replace("°","")
                 dusuk=dereceler.split(" ")[1].replace("°","")
                 veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek, dusuk)
+                
+                #print(havaDurumuVerileri)
     
                 sayac+=1
+        time.sleep(2)
     return havaDurumuVerileri
             
-
+print(sicakliklariCek())
 
 
