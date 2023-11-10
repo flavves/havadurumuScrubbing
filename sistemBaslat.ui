@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1045</width>
-    <height>826</height>
+    <height>817</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -254,7 +254,7 @@
       <x>310</x>
       <y>0</y>
       <width>20</width>
-      <height>611</height>
+      <height>511</height>
      </rect>
     </property>
     <property name="orientation">
@@ -267,7 +267,7 @@
       <x>640</x>
       <y>-10</y>
       <width>20</width>
-      <height>611</height>
+      <height>531</height>
      </rect>
     </property>
     <property name="orientation">
@@ -344,10 +344,13 @@
     </property>
    </widget>
    <widget class="QPushButton" name="veriTabaninaYukle">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>600</x>
-      <y>620</y>
+      <y>530</y>
       <width>421</width>
       <height>81</height>
      </rect>
@@ -367,7 +370,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>620</y>
+      <y>530</y>
       <width>421</width>
       <height>81</height>
      </rect>
@@ -387,7 +390,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>710</y>
+      <y>620</y>
       <width>421</width>
       <height>81</height>
      </rect>
@@ -401,6 +404,47 @@
     </property>
     <property name="text">
      <string>Butun Sistemleri Durdur</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="veriTabaniSonuc">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>630</y>
+      <width>411</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Sonuc</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="linkleriToplasinMiCheckBox">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>550</y>
+      <width>111</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Linkleri Topla</string>
     </property>
    </widget>
   </widget>

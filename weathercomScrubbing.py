@@ -112,10 +112,14 @@ class weatherComScrubbing:
         with open("weathercomIllerSessionCode.json", "r") as json_dosya:
             okunan_sozluk = json.load(json_dosya)
         havaDurumuVerileri={}
-        for ilCek in okunan_sozluk:    
+      
+        for ilCek in okunan_sozluk:   
+       
             try:
+                
                 #print(okunan_sozluk[ilCek])
                 time.sleep(1)
+                
                
                 url="https://weather.com/tr-TR/weather/tenday/l/%s"%okunan_sozluk[ilCek] 
                 driver.get(url)
@@ -141,16 +145,27 @@ class weatherComScrubbing:
                 
                 
                 sayac=0
-                print("6")
+               
                 fonksiyonlar.bekleName("twc-logo", 30, driver)
-                print("7")
+                
                 for i in range(0,7):
                     while 1:
                         time.sleep(0.5)
                         try:
                             element=fonksiyonlar.idElementDondur("detailIndex"+str(i), 3, driver)
+                            
                             yuksek=element.text.split("\n")[2].replace("°","")
                             dusuk=element.text.split("\n")[3].replace("°","").replace("/","")
+                            
+                            try:
+                                if "%" in yuksek:
+                                    fonksiyonlar.tiklaName("caret-up", 3, driver)
+                                    yuksek=element.text.split("\n")[2].replace("°","")
+                                    dusuk=element.text.split("\n")[3].replace("°","").replace("/","")
+                                
+                            except:
+                                pass
+                            
                             break
                         except:
                             pass
@@ -161,6 +176,7 @@ class weatherComScrubbing:
                     #print(havaDurumuVerileri)
                 
             except:
+                pass
                 return False
                 
         with open("weatherComHavaDurumuVerileri.json", "w") as json_dosya:

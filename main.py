@@ -37,6 +37,9 @@ from sistemBaslat_python import Ui_MainWindow
 import metoOfficeScrubbing
 import weathercomScrubbing
 import havadurumuxScrubbing
+import mongoDB
+
+
 
 class MainWindow(QMainWindow):
         def __init__(self):
@@ -69,7 +72,17 @@ class MainWindow(QMainWindow):
             
             self.ui.HavadurumuxDurdur.clicked.connect(self.havadurumuxDurdurButtonClicked)
             ################
-        
+            self.ui.veriTabaninaYukle.clicked.connect(self.veriTabaninaYukleButtonClicked)
+            
+            
+        def veriTabaninaYukleButtonClicked(self):
+            mongoDBFunc=mongoDB.mongoDBConnect()
+            sonuc=mongoDBFunc.mongoDBYukle()
+            if sonuc==True:
+                self.ui.veriTabaniSonuc.setText("Yükleme Başarıyla Tamamlandı")
+            else:
+                self.ui.veriTabaniSonuc.setText("Yükleme Başarısız")
+
         
         ##########################################################################
         def havadurumuxLinkleriAlButtonClicked(self):
