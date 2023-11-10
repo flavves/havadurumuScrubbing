@@ -98,6 +98,14 @@ def illerinSessionCodeDegerleriniCek():
     with open("metofficeIllerSessionCode.json", "w") as json_dosya:
         json.dump(sehirlerinSessionDegerleri, json_dosya)
             
+def veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek_sicaklik, dusuk_sicaklik):
+    if plaka not in havaDurumuVerileri:
+        havaDurumuVerileri[plaka] = {}
+    havaDurumuVerileri[plaka][sayac] = {"yuksek_sicaklik": yuksek_sicaklik, "dusuk_sicaklik": dusuk_sicaklik}
+
+with open("illerPlakaKodlari.json", "r", encoding="utf-8") as json_dosya:
+    illerinPlakalari = json.load(json_dosya)
+
 
 def yediGunlukVeriCek():
     with open("metofficeIllerSessionCode.json", "r") as json_dosya:
@@ -113,14 +121,23 @@ def yediGunlukVeriCek():
         veriler=source.split("dayNav")[1].split("tabDay7")[0].split('class="tab-inner">')
         veriler.pop(0)
         
+        for plakaIcin in illerinPlakalari["iller"]:
+            if plakaIcin["il"]==il:
+                plaka=plakaIcin["plaka"]
+        
+        havaDurumuVerileri={}
+        sayac=0
+        
+        
         for veri in veriler:
             dereceler=veri.split('<span data-value=')
             yuksek=dereceler[1].split('"')[1]
             dusuk=dereceler[2].split('"')[1]
+            
+            veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek, dusuk)
 
-            print(yuksek)
-            print(dusuk)
+            sayac+=1
 
-
+    return havaDurumuVerileri
 
 

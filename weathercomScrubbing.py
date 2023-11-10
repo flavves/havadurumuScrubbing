@@ -92,7 +92,24 @@ def illerinSessionCodeDegerleriniCek():
         time.sleep(1)
     with open("weathercomIllerSessionCode.json", "w") as json_dosya:
         json.dump(sehirlerinSessionDegerleri, json_dosya)
-            
+    
+
+
+
+
+with open("illerPlakaKodlari.json", "r", encoding="utf-8") as json_dosya:
+    illerinPlakalari = json.load(json_dosya)
+
+
+def veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek_sicaklik, dusuk_sicaklik):
+    if plaka not in havaDurumuVerileri:
+        havaDurumuVerileri[plaka] = {}
+    havaDurumuVerileri[plaka][sayac] = {"yuksek_sicaklik": yuksek_sicaklik, "dusuk_sicaklik": dusuk_sicaklik}
+
+
+
+
+        
 def yediGunlukVeriCek():
     with open("weathercomIllerSessionCode.json", "r") as json_dosya:
         okunan_sozluk = json.load(json_dosya)
@@ -108,11 +125,25 @@ def yediGunlukVeriCek():
         fonksiyonlar.tiklaName("caret-up", 30, driver)
         
         #id 
+        
+        for plakaIcin in illerinPlakalari["iller"]:
+            if plakaIcin["il"]==il:
+                plaka=plakaIcin["plaka"]
+    
+        havaDurumuVerileri={}
+        
+        sayac=0
+        
         for i in range(0,7):
             element=fonksiyonlar.idElementDondur("detailIndex"+str(i), 3, driver)
             yuksek=element.text.split("\n")[2].replace("°","")
             dusuk=element.text.split("\n")[3].replace("°","").replace("/","")
-            print("yüksek %s düşük %s"%(yuksek,dusuk))
+            
+            veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek, dusuk)
+
+            sayac+=1
+            
+    return havaDurumuVerileri
             
         
         

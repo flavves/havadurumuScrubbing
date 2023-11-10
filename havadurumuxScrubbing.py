@@ -15,8 +15,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
-global session_id,session_cookies
 from unidecode import unidecode
 import json
 # havadurumux scrubbing
@@ -31,8 +29,7 @@ headers = {
     "User-Agent": "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
 }
 driver.get("https://www.havadurumux.net")
-session_id = driver.session_id
-session_cookies = driver.get_cookies()
+
 
 #illeri çekme işlemi
 def illeriCek():
@@ -68,32 +65,35 @@ with open("illerPlakaKodlari.json", "r", encoding="utf-8") as json_dosya:
     illerinPlakalari = json.load(json_dosya)
 
 
-for il in illerListesi:
-    driver.get('https://www.havadurumux.net/%s-hava-durumu/'%turkish_to_english(il))
-    #htmlKodu=driver.page_source
-    havaVerileri=driver.find_element_by_id("hor-minimalist-a").text.split("\n")
-    havaVerileri.pop(0)
-    havaVerileri=havaVerileri[0:14]
-    
-    
-    for dereceler in havaVerileri:
-        if "°" in dereceler:
-            yuksek=dereceler.split(" ")[0].replace("°","")
-            dusuk=dereceler.split(" ")[1].replace("°","")
+def veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek_sicaklik, dusuk_sicaklik):
+    if plaka not in havaDurumuVerileri:
+        havaDurumuVerileri[plaka] = {}
+    havaDurumuVerileri[plaka][sayac] = {"yuksek_sicaklik": yuksek_sicaklik, "dusuk_sicaklik": dusuk_sicaklik}
+
+def sicakliklariCek():
+    for il in illerListesi:
+        driver.get('https://www.havadurumux.net/%s-hava-durumu/'%turkish_to_english(il))
+        #htmlKodu=driver.page_source
+        havaVerileri=driver.find_element_by_id("hor-minimalist-a").text.split("\n")
+        havaVerileri.pop(0)
+        havaVerileri=havaVerileri[0:14]
         
-
-
-
-
-
-
-
-
-
-
-
-
-
+        for plakaIcin in illerinPlakalari["iller"]:
+            if plakaIcin["il"]==il:
+                plaka=plakaIcin["plaka"]
+    
+        havaDurumuVerileri={}
+        
+        sayac=0
+        for dereceler in havaVerileri:
+            if "°" in dereceler:
+                yuksek=dereceler.split(" ")[0].replace("°","")
+                dusuk=dereceler.split(" ")[1].replace("°","")
+                veri_ekle(havaDurumuVerileri,plaka, sayac, yuksek, dusuk)
+    
+                sayac+=1
+    return havaDurumuVerileri
+            
 
 
 
