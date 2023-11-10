@@ -39,6 +39,9 @@ import weathercomScrubbing
 import havadurumuxScrubbing
 import mongoDB
 
+global hepsiniAyniAndaBaslat
+hepsiniAyniAndaBaslat=False
+
 
 
 class MainWindow(QMainWindow):
@@ -46,6 +49,7 @@ class MainWindow(QMainWindow):
             super(MainWindow, self).__init__()
             self.ui = Ui_MainWindow()
             self.ui.setupUi(self)
+            global hepsiniAyniAndaBaslat
         
             self.setWindowTitle("Flavves-Batuhan okmen Hava Durumu Scrubbing- Ozel Proje")
             
@@ -71,10 +75,111 @@ class MainWindow(QMainWindow):
             self.ui.HavadurumuxBaslat.clicked.connect(self.havadurumuxBaslatButtonClicked)
             
             self.ui.HavadurumuxDurdur.clicked.connect(self.havadurumuxDurdurButtonClicked)
+            
             ################
             self.ui.veriTabaninaYukle.clicked.connect(self.veriTabaninaYukleButtonClicked)
+            self.ui.butunSistemleriBaslat.clicked.connect(self.butunSistemleriBaslatButtonClicked)
+            self.ui.butunSistemleriDurdur.clicked.connect(self.butunSistemleriDurdurButtonClicked)
+            #butunSistemleriBaslat
             
             
+            global onay
+            onay=0
+            try:
+                with open("havaDurumuxHavaDurumuVerileri.json", "r", encoding="utf-8") as json_dosya:
+                    havaDurumuxHavaDurumuVerileri = json.load(json_dosya)
+                    print(len(havaDurumuxHavaDurumuVerileri))
+                    if len(havaDurumuxHavaDurumuVerileri)>2:
+                        onay+=1
+            except:
+                pass
+            
+            try:
+                with open("weatherComHavaDurumuVerileri.json", "r", encoding="utf-8") as json_dosya:
+                    weatherComHavaDurumuVerileri = json.load(json_dosya)
+                    if len(weatherComHavaDurumuVerileri)>2:
+                        onay+=1
+
+            except:
+                pass
+            
+            try:
+                with open("metofficeHavaDurumuVerileri.json", "r", encoding="utf-8") as json_dosya:
+                    metofficeHavaDurumuVerileri = json.load(json_dosya)
+                    if len(metofficeHavaDurumuVerileri)>2:
+                        onay+=1
+
+            except:
+                pass
+           
+            
+            if onay==3:
+                self.ui.veriTabaninaYukle.setEnabled(True)
+            
+            """
+            try:
+                with open("havaDurumuxHavaDurumuVerileri.json", "r", encoding="utf-8") as json_dosya:
+                    havaDurumuxHavaDurumuVerileri = json.load(json_dosya)
+                    
+                    gelentext=self.ui.havaDurumuxVeriler.text()
+                    
+                    linkler=gelentext.split("|")[0]
+                    havaVerileri=gelentext.split("|")[1].replace("x",str(len(havaDurumuxHavaDurumuVerileri)))
+                    self.ui.havaDurumuxVeriler.setText(linkler+havaVerileri)
+            except:
+                pass
+            
+            try:
+                with open("weatherComHavaDurumuVerileri.json", "r", encoding="utf-8") as json_dosya:
+                    weatherComHavaDurumuVerileri = json.load(json_dosya)
+                    
+                    gelentext=self.ui.weatherComVeriler.text()
+                   
+                    linkler=gelentext.split("|")[0]
+                    havaVerileri=gelentext.split("|")[1].replace("x",str(len(weatherComHavaDurumuVerileri)))
+                    self.ui.weatherComVeriler.setText(linkler+havaVerileri)
+            except:
+                pass
+            
+            try:
+                with open("metofficeHavaDurumuVerileri.json", "r", encoding="utf-8") as json_dosya:
+                    metofficeHavaDurumuVerileri = json.load(json_dosya)
+                    
+                    gelentext=self.ui.metOfficeVeriler.text()
+                    
+                    linkler=gelentext.split("|")[0]
+                    havaVerileri=gelentext.split("|")[1].replace("x",str(len(metofficeHavaDurumuVerileri)))
+                    self.ui.metOfficeVeriler.setText(linkler+havaVerileri)
+            except:
+                pass
+            
+        """
+        
+        #################################################    
+        
+        
+        def butunSistemleriBaslatButtonClicked(self):
+            global hepsiniAyniAndaBaslat
+            LinklerAlinsin=self.ui.linkleriToplasinMiCheckBox.isChecked()
+            if LinklerAlinsin:
+                hepsiniAyniAndaBaslat=True
+                self.ui.HavadurumuxLinkleriAl.click()
+                self.ui.weatherLinkleriAl.click()
+                self.ui.metoOfficeLinkleriAl.click()
+            else:
+                self.ui.HavadurumuxBaslat.click()
+                self.ui.weatherBaslat.click()
+                self.ui.metoOfficeBaslat.click()
+            
+        
+        
+        def butunSistemleriDurdurButtonClicked(self):
+            self.ui.HavadurumuxDurdur.click()
+            self.ui.weatherDurdur.click()
+            self.ui.metoOfficeDurdur.click()
+        
+        
+        
         def veriTabaninaYukleButtonClicked(self):
             mongoDBFunc=mongoDB.mongoDBConnect()
             sonuc=mongoDBFunc.mongoDBYukle()
@@ -82,7 +187,7 @@ class MainWindow(QMainWindow):
                 self.ui.veriTabaniSonuc.setText("Yükleme Başarıyla Tamamlandı")
             else:
                 self.ui.veriTabaniSonuc.setText("Yükleme Başarısız")
-
+                
         
         ##########################################################################
         def havadurumuxLinkleriAlButtonClicked(self):
@@ -112,8 +217,10 @@ class MainWindow(QMainWindow):
             self.ui.HavadurumuxSonucu.setText("Durduruldu")
             
         def reportProgreshavadurumux(self,n):
+            global hepsiniAyniAndaBaslat
             self.ui.HavadurumuxSonucu.setText(str(n))
-
+            if hepsiniAyniAndaBaslat:
+                self.ui.HavadurumuxBaslat.click()
 
         def havadurumuxBaslatButtonClicked(self):
             global myworkerhavadurumuxBaslat
@@ -131,7 +238,12 @@ class MainWindow(QMainWindow):
                 with open("havaDurumuxHavaDurumuVerileri.json", "r", encoding="utf-8") as json_dosya:
                     havadurumuVerileri = json.load(json_dosya)
                 print(havadurumuVerileri)
-            
+                
+                
+                if self.ui.havadurumuxCheckBox.isChecked() and self.ui.metoCheckBox.isChecked() and self.ui.weatherCheckBox.isChecked():
+                    print("hepsi tamam")
+                    self.ui.veriTabaninaYukle.setEnabled(True)
+                    
         ##########################################################################  
         
         ##########################################################################
@@ -162,7 +274,10 @@ class MainWindow(QMainWindow):
             self.ui.weatherSonucu.setText("Durduruldu")
             
         def reportProgresWeather(self,n):
+            global hepsiniAyniAndaBaslat
             self.ui.weatherSonucu.setText(str(n))
+            if hepsiniAyniAndaBaslat:
+                self.ui.weatherBaslat.click()
 
         
 
@@ -182,6 +297,10 @@ class MainWindow(QMainWindow):
                 with open("weatherComHavaDurumuVerileri.json", "r", encoding="utf-8") as json_dosya:
                     havadurumuVerileri = json.load(json_dosya)
                 print(havadurumuVerileri)
+                
+                if self.ui.havadurumuxCheckBox.isChecked() and self.ui.metoCheckBox.isChecked() and self.ui.weatherCheckBox.isChecked():
+                    print("hepsi tamam")
+                    self.ui.veriTabaninaYukle.setEnabled(True)
             
         ##########################################################################    
         
@@ -215,9 +334,11 @@ class MainWindow(QMainWindow):
             self.ui.metoOfficeSonucu.setText("Durduruldu")
             
         def reportProgressmeto(self,n):
+            global hepsiniAyniAndaBaslat
             self.ui.metoOfficeSonucu.setText(str(n))
-
-        
+            if hepsiniAyniAndaBaslat:
+                self.ui.metoOfficeLinkleriAl.click()
+      
 
         def metoOfficeBaslatButtonClicked(self):
             global myworkerBaslat
@@ -235,6 +356,10 @@ class MainWindow(QMainWindow):
                 with open("metofficeHavaDurumuVerileri.json", "r", encoding="utf-8") as json_dosya:
                     havadurumuVerileri = json.load(json_dosya)
                 print(havadurumuVerileri)
+                
+                if self.ui.havadurumuxCheckBox.isChecked() and self.ui.metoCheckBox.isChecked() and self.ui.weatherCheckBox.isChecked():
+                    print("hepsi tamam")
+                    self.ui.veriTabaninaYukle.setEnabled(True)
             
         ##########################################################################    
 
@@ -243,11 +368,12 @@ class havadurumuxScrubbingThread(QThread):
     progress = pyqtSignal(str)
     #songiris = pyqtSignal(str)
     #kazanilanItemler = pyqtSignal(int,str,str,str)
-    
+ 
     def __init__(self):
         super().__init__()
 
     def run(self):
+        
         sonuc="Başlıyor"
         self.progress.emit(sonuc)
         

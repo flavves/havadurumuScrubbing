@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1045</width>
-    <height>817</height>
+    <height>805</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -254,7 +254,7 @@
       <x>310</x>
       <y>0</y>
       <width>20</width>
-      <height>511</height>
+      <height>541</height>
      </rect>
     </property>
     <property name="orientation">
@@ -267,7 +267,7 @@
       <x>640</x>
       <y>-10</y>
       <width>20</width>
-      <height>531</height>
+      <height>561</height>
      </rect>
     </property>
     <property name="orientation">
@@ -294,7 +294,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Veriler Yazmaya Hazır Değil</string>
+     <string>Veriler Yazmaya Hazır</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="weatherCheckBox">
@@ -317,7 +317,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Veriler Yazmaya Hazır Değil</string>
+     <string>Veriler Yazmaya Hazır</string>
     </property>
    </widget>
    <widget class="QCheckBox" name="havadurumuxCheckBox">
@@ -340,7 +340,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Veriler Yazmaya Hazır Değil</string>
+     <string>Veriler Yazmaya Hazır</string>
     </property>
    </widget>
    <widget class="QPushButton" name="veriTabaninaYukle">
@@ -349,8 +349,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>530</y>
+      <x>560</x>
+      <y>580</y>
       <width>421</width>
       <height>81</height>
      </rect>
@@ -369,8 +369,8 @@
    <widget class="QPushButton" name="butunSistemleriBaslat">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>530</y>
+      <x>10</x>
+      <y>580</y>
       <width>421</width>
       <height>81</height>
      </rect>
@@ -386,11 +386,11 @@
      <string>Butun Sistemleri Başlat</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="butunSistemleriBaslat_2">
+   <widget class="QPushButton" name="butunSistemleriDurdur">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>620</y>
+      <x>10</x>
+      <y>670</y>
       <width>421</width>
       <height>81</height>
      </rect>
@@ -409,8 +409,8 @@
    <widget class="QLabel" name="veriTabaniSonuc">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>630</y>
+      <x>570</x>
+      <y>680</y>
       <width>411</width>
       <height>61</height>
      </rect>
@@ -430,8 +430,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>550</y>
+      <x>440</x>
+      <y>600</y>
       <width>111</width>
       <height>51</height>
      </rect>
